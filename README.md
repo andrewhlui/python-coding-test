@@ -1,6 +1,9 @@
 # python-coding-test
 
-1. 
+1. Enter code in Python
+2. Run Python
+3. Give .csv file location
+4. Look at .html files. They should open automatically, if not, they'll be in the same folder as the Python program. 
 
 
 Reasoning for model:
