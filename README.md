@@ -1,5 +1,11 @@
 # python-coding-test
 
+Requirements
+I wrote this using Spyder with Anaconda (Python 2.7). You will need to be able to import the following modules:
+bokeh
+pandas
+statsmodel.api
+
 1. Enter code in Python
 2. Run Python
 3. Give .csv file location
