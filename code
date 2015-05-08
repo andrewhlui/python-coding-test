@@ -9,7 +9,7 @@ import pandas as pd
 import statsmodels.api as stats
 from math import log
 
-location = 'C:\AirPassengers.csv' #raw_input('Enter .csv file location:')
+location = raw_input('Enter .csv file location:')
 # C:\AirPassengers.csv
 df = pd.read_csv(location, index_col=0)
 # importing the document from wherever it is, putting it in a dataframe
