@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May 08 11:24:58 2015
+
+@author: andrewhlui
+"""
+
+import pandas as pd
+import statsmodels.api as stats
+from math import log
+
+location = 'C:\AirPassengers.csv' #raw_input('Enter .csv file location:')
+# C:\AirPassengers.csv
+df = pd.read_csv(location, index_col=0)
+# importing the document from wherever it is, putting it in a dataframe
+
+  
+variable_time = df.time
+variable_pass = df.AirPassengers # assigning variables
+
+# logging passenger numbers
+logpass = []
+for n in variable_pass:
+    logpass.append(log(n))
+df['logpass'] = logpass
+
+laglist = [] # creating a lagged version of variable_pass
+for n in df.logpass:
+    laglist.append(n)    
+laglist.remove(laglist[len(laglist)-1]) # removing last lagged because it's useless
+laglist.remove(laglist[0])
+
+lag2list = []
+for n in df.logpass:
+    lag2list.append(n)
+lag2list.remove(lag2list[len(lag2list)-1])
+lag2list.remove(lag2list[len(lag2list)-2])
+
+
+df = df.ix[3:] # removing the first row so that lagged variables can be added
+df['loglag'] = laglist # lag is last month's passengers
+df['loglag2'] = lag2list 
+
+
+
+
+
+# creating x and y variables
+
+y = df['logpass'] # dependent variable: this month's air passengers
+x = df[['time','loglag','loglag2']] # independent variables: last month's air passengers, the date
+x = stats.add_constant(x) # adding a constant value to the dataframe
+
+# regression begins
+# doing the regression using statsmodels
+
+results = stats.OLS(y, x)
+results = results.fit()
+print results.summary()
+# text analysis
+
+# graphing
+fitted_line = results.fittedvalues
+# creating a line as a list
+
+from bokeh.plotting import figure, output_file, show
+output_file('output.html',title = 'output')
+plot = figure(title = 'Line of Best Fit', x_axis_label = 'Date', y_axis_label = 'log(Number of Passengers)')
+plot.circle(df.time, logpass, fill_color = "blue", line_color = "blue", size = 2)
+# scatterplot
+plot.line(df.time, fitted_line, legend = 'line of best fit', line_color = 'red', line_width = 2)
+# line of best fit
+show(plot)
+# output
+
+output_file('residuals.html',title = 'Residuals') # looking at residuals
+resid = figure(title = 'Residuals', x_axis_label = 'Date', y_axis_label = 'Residuals')
+resid.circle(df.time,results.resid)
+show(resid)
